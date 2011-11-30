@@ -2,7 +2,7 @@ require File.expand_path('../lib/gitvault/version', __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = "gitvault"
-  s.version     = Docify::VERSION.dup
+  s.version     = Gitvault::VERSION.dup
   s.summary     = "Your personal git hosting"
   s.description = "TO BE FILLED"
   s.homepage    = "http://github.com/sosedoff/gitvault"
