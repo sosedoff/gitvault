@@ -1,0 +1,4 @@
+---
+repositories: /home/git
+authorized_keys: /home/git/.ssh/authorized_keys
+api_token: YOUR_API_TOKEN
