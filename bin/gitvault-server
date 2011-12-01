@@ -1,7 +1,13 @@
 #!/usr/bin/env ruby
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
 
-# Check if we've got git on the system
+begin
+  require 'vegas'
+rescue LoadError
+  require 'rubygems'
+  require 'vegas'
+end
+
 if `which git`.strip.empty?
   STDERR.puts "Your system does not have Git core installed."
   exit(1)
@@ -14,19 +20,10 @@ options = {
   :skip_launch => true
 }
 
-require 'vegas'
-require 'gitvault'
 require 'gitvault/server'
 
-options[:before_run] = lambda { |v|
-  path = File.expand_path((ENV['VAULTCONFIG'] || v.args.first) || '/etc/gitvault.conf')
-
-  if File.exists?(path)
+Vegas::Runner.new(Gitvault::Server, 'Gitvault Server', options) do |runner, opts, app|
+  opts.on('-c', '--config PATH', 'Run using provided configuration file') do |path|
     Gitvault.configure(path)
-  else
-    raise ArgumentError, "Configuration file \"#{path}\" does not exist!"
-    exit(1)
   end
-}
-
-Vegas::Runner.new(Gitvault::Server, 'gitvault-server', options)
+end

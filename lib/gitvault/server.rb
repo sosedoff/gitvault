@@ -1,6 +1,8 @@
 require 'sinatra/base'
 require 'json'
 
+require 'gitvault'
+require 'gitvault/configuration'
 require 'gitvault/version'
 require 'gitvault/errors'
 require 'gitvault/git'
@@ -10,13 +12,7 @@ require 'gitvault/authorized_keys'
 module Gitvault
   class Server < Sinatra::Base
     dir = File.dirname(File.expand_path(__FILE__))
-    
-    configure do
-      set :git_root, '/tmp/gitvault'
       
-      Gitvault::Git.configure(settings.git_root)
-    end
-    
     helpers do
       def json_response(data)
         data.to_json
