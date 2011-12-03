@@ -62,14 +62,15 @@ module Gitvault
       end
       
       sz          = `du -sk #{path}`.strip.split(' ').first || 0
-      description = File.read("#{path}/description")
+      empty       = Dir["#{path}/branches/*"].size == 0
+      description = File.read("#{path}/description").strip
       url         = "git@#{`hostname`.strip}:#{name}.git"
       
       {
-        :empty       => sz == 0,
+        :empty       => empty,
         :filesize    => Integer(sz),
         :description => description,
-        :url         => url
+        :remote      => url
       }
     end
     

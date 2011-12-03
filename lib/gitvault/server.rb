@@ -23,7 +23,7 @@ module Gitvault
       end
       
       def git
-        Gitvault::Git.new(settings.git_root)
+        Gitvault::Git.new(Gitvault.configuration.repositories)
       end
       
       def require_repository
@@ -61,7 +61,8 @@ module Gitvault
     
     get '/repositories' do
       begin
-        json_response(git.list)
+        repos = git.list.map { |r| {'name' => r, 'info' => git.info(r) } }
+        json_response(repos)
       rescue GitError => err
         bad_request(err.message)
       end

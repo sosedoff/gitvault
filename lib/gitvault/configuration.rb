@@ -27,7 +27,7 @@ module Gitvault
     end
     
     def method_missing(key)
-      @keys[key]
+      @keys[key.to_s]
     end
     
     def to_s
