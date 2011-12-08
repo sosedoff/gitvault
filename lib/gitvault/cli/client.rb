@@ -3,6 +3,7 @@ module Gitvault
     class Client
       include Request
       include Repositories
+      include PublicKeys
     
       attr_reader :api_base
     

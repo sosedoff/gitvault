@@ -6,13 +6,8 @@ require 'gitvault/cli/session'
 
 session = Gitvault::CLI::Session.new
 
-if session.accounts.empty?
-  STDOUT.puts "You dont have any accounts yet."
-  exit(1)
-end
-
 if session.accounts.size == 1
   session.run!(session.accounts.first, ARGV)
 else
-  # TODO: Accounts switcher
+  session.run!(nil, ARGV)
 end

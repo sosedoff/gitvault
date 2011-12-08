@@ -47,7 +47,7 @@ module Gitvault
     end
     
     get '/' do
-      json_response(:time => Time.now)
+      json_response("Gitvault server")
     end
     
     get '/version' do

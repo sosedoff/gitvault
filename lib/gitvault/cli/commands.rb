@@ -25,6 +25,26 @@ module Gitvault::CLI::Command
     end
   end
   
+  class Accounts < Base
+    def index
+      session.accounts.each do |acc|
+        puts "#{acc.name} -> #{acc.url}"
+      end
+    end
+    
+    def create
+      name = ask('Account name')
+      url = ask('Base URL')
+      
+      if session.add_account(name, url)
+        puts "New account \"#{name}\" has been added."
+        session.save_accounts!
+      else
+        puts "The URL you provided is not valid."
+      end
+    end
+  end
+  
   class Repositories < Base
     def list
       @client.get_repositories.each do |repo|

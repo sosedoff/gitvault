@@ -23,10 +23,14 @@ module Gitvault::CLI
     end
     
     def run!(account, args)
-      cmd = args.shift.to_s.strip || 'help'
+      cmd = args.kind_of?(String) ? args : (args.shift.to_s.strip || 'help')
       
-      client = Gitvault::CLI::Client.new(account.url)
+      client = account.nil? ? nil : Gitvault::CLI::Client.new(account.url)
       case cmd
+        when 'accounts'
+          Gitvault::CLI::Command::Accounts.new(self, args, client).index  
+        when 'accounts:create'
+          Gitvault::CLI::Command::Accounts.new(self, args, client).create
         when 'list'
           Gitvault::CLI::Command::Repositories.new(self, args, client).list
         when 'show'
@@ -52,7 +56,7 @@ module Gitvault::CLI
     
     def save_accounts!
       hash = {}
-      @accounts.each_pair { |name, acc| hash[name] = acc.url }
+      @accounts.each { |acc| hash[acc.name] = acc.url }
       File.open(accounts_file, 'w') do |f|
         f.write YAML.dump(hash)
       end

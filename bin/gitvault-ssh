@@ -1,3 +1,6 @@
 #!/usr/bin/env ruby
-STDERR.puts "TODO: SSH Proxy implementation"
-exit
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
+
+require 'gitvault/ssh'
+session = Gitvault::SSH.new(ARGV, ENV)
+session.execute!

@@ -7,5 +7,6 @@ module Gitvault
     class Forbidden     < Error ; end # 403
     class NotFound      < Error ; end # 404
     class InternalError < Error ; end # 500
+    class BadGateway    < Error ; end # 502
   end
 end

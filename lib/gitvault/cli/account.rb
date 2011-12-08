@@ -11,7 +11,8 @@ module Gitvault::CLI
       begin
         Gitvault::CLI::Client.new(url).version
         true
-      rescue Exception
+      rescue Exception => ex
+        puts "Error: #{ex.class}"
         false
       end
     end

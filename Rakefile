@@ -15,5 +15,5 @@ task :build do
   puts `gem build gitvault.gemspec`
   
   puts "-> Installing..."
-  puts `gem install gitvault-#{Gitvault::VERSION}.gem`
+  puts `gem install --no-ri --no-rdoc gitvault-#{Gitvault::VERSION}.gem`
 end

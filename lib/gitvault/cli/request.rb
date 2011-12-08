@@ -3,6 +3,33 @@ require 'faraday_middleware'
 require 'multi_json'
 
 module Gitvault
+  module ErrorHelper
+    
+    def raise_error(code, message='')
+      case code
+        when 400 then raise Gitvault::CLI::BadRequest.new message
+        when 401 then raise Gitvault::CLI::Unauthorized.new message
+        when 403 then raise Gitvault::CLI::Forbidden.new message
+        when 404 then raise Gitvault::CLI::NotFound.new message
+        when 406 then raise Gitvault::CLI::BadRequest.new message
+        when 500 then raise Gitvault::CLI::InternalError.new message
+        when 502 then raise Gitvault::CLI::BadGateway.new message
+      end
+    end
+    
+    def on_complete(response)
+      raise_error(response[:status].to_i)
+    end
+  end
+end
+
+module Faraday
+  class Response::RaiseGitvaultError < Response::Middleware
+    include Gitvault::ErrorHelper
+  end
+end
+
+module Gitvault
   module CLI
     module Request
       protected
@@ -29,6 +56,7 @@ module Gitvault
         connection = Faraday.new(url) do |c|
           c.use(Faraday::Request::UrlEncoded)
           c.use(Faraday::Response::ParseJson)
+          c.use(Faraday::Response::RaiseGitvaultError)
           c.adapter(Faraday.default_adapter)
         end
       end
