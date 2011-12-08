@@ -34,7 +34,7 @@ module Gitvault::SSH
     end
     
     def git_request?
-      if (@env.keys && ['SSH_CLIENT', 'SSH_CONNECTION', 'SSH_ORIGINAL_COMMAND']) == 3
+      if (@env.keys && ['SSH_CLIENT', 'SSH_CONNECTION', 'SSH_ORIGINAL_COMMAND']).size == 3
         @env['SSH_ORIGINAL_COMMAND'] =~ GIT_COMMAND ? true : false
       end
       false
