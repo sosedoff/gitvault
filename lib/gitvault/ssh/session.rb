@@ -14,6 +14,9 @@ module Gitvault::SSH
       terminate("Only git requests are allowed.") unless git_request?
 
       action, repo = repo_request.first, repo_request.last
+      
+      repo = File.basename(repo)
+      repo << ".git" unless File.extname(repo) == '.git'
       repo_path = File.join(@env['HOME'], repo)
       
       unless File.exists?(repo_path)
