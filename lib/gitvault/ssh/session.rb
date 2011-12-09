@@ -14,12 +14,14 @@ module Gitvault::SSH
       terminate("Only git requests are allowed.") unless git_request?
 
       action, repo = repo_request.first, repo_request.last
-      params = [action, File.join(@env['HOME'], 'repositories', repo)]
-      exec("git-shell", "-c", params.join(' '))
+      repo_path = File.join(@env['HOME'], repo)
       
-      git_action, git_repo = request.first, request.last
-      args = [git_action, "'/home/git/repositories/#{git_repo}'"]
-      exec("git-shell", "-c", args.join(' '))
+      unless File.exists?(repo_path)
+        terminate("Repository does not exist")
+      end
+      
+      params = [action, "'#{repo_path}'"]
+      exec("git-shell", "-c", params.join(' '))
     end
     
     def terminate(reason)
@@ -30,18 +32,19 @@ module Gitvault::SSH
     private
     
     def valid_environment?
-      @env['USER'] == GIT_USER && @env['HOME'] == GIT_HOME
+      env['USER'] == GIT_USER && env['HOME'] == GIT_HOME
     end
     
     def git_request?
-      if (@env.keys && ['SSH_CLIENT', 'SSH_CONNECTION', 'SSH_ORIGINAL_COMMAND']).size == 3
-        @env['SSH_ORIGINAL_COMMAND'] =~ GIT_COMMAND ? true : false
+      if env.key?('SSH_CLIENT') && env.key?('SSH_CONNECTION') && env.key?('SSH_ORIGINAL_COMMAND')
+        env['SSH_ORIGINAL_COMMAND'] =~ GIT_COMMAND ? true : false
+      else
+        false
       end
-      false
     end
     
     def repo_request
-      @repo_request ||= @env['SSH_ORIGINAL_COMMAND'].scan(COMMAND).flatten
+      @repo_request ||= @env['SSH_ORIGINAL_COMMAND'].scan(GIT_COMMAND).flatten
     end
   end
 end
