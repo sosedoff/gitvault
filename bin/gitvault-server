@@ -22,6 +22,12 @@ options = {
 
 require 'gitvault/server'
 
+# Check if the system has a global config for the service
+# then apply it by default
+if File.exists?('/etc/gitvault.conf')
+  Gitvault.configure('/etc/gitvault.conf')
+end
+
 Vegas::Runner.new(Gitvault::Server, 'Gitvault Server', options) do |runner, opts, app|
   opts.on('-c', '--config PATH', 'Run using provided configuration file') do |path|
     Gitvault.configure(path)
