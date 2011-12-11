@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require 'json'
+require 'active_model'
 
 require 'gitvault'
 require 'gitvault/configuration'
@@ -94,6 +95,22 @@ module Gitvault
         json_response(:success => git.destroy(@repo))
       rescue GitError => err
         bad_request(err.message)
+      end
+    end
+    
+    get '/public_keys' do
+      json_response(AuthorizedKeys.read.map(&:to_hash))
+    end
+    
+    post '/public_keys' do
+      key = PublicKey.new(params[:public_key])
+      if key.valid?
+        existing_keys = AuthorizedKeys.read
+        existing_keys << key
+        AuthorizedKeys.write('gitvault-ssh', existing_keys)
+        json_response(:success => true)
+      else
+        json_response(:success => false, :errors => key.errors.messages)
       end
     end
   end
