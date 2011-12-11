@@ -15,6 +15,7 @@ end
 
 options = {
   :environment => 'production',
+  :host        => '127.0.0.1',
   :port        => 9000,
   :server      => 'thin',
   :skip_launch => true
