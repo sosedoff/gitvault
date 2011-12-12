@@ -23,6 +23,11 @@ module Gitvault::SSH
         terminate("Repository does not exist")
       end
       
+      key_type = args.shift
+      if key_type == 'deploy' && !read_command?(action)
+        terminate("Read-only access for deployment")
+      end
+      
       params = [action, "'#{repo_path}'"]
       exec("git-shell", "-c", params.join(' '))
     end
